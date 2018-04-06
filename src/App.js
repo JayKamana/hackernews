@@ -48,6 +48,8 @@ const Table = ({ list, pattern, onDismiss }) => (
 );
 
 class App extends Component {
+  _isMounted = false;
+
   constructor() {
     super();
 
@@ -121,13 +123,19 @@ class App extends Component {
       `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
     )
       .then(result => this.setSearchTopStories(result.data))
-      .catch(error => this.setState({ error }));
+      .catch(error => this._isMounted && this.setState({ error }));
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
     this.fetchSearchTopStories(searchTerm);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -170,3 +178,5 @@ class App extends Component {
 }
 
 export default App;
+
+export { Button, Search, Table };
