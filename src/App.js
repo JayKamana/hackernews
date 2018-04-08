@@ -221,20 +221,24 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-    const { searchKey, results } = this.state;
+    this.setState(updateSearchTopStoriesState(hits, page));
 
-    const oldHits =
-      results && results[searchKey] ? results[searchKey].hits : [];
+    const updateSearchTopStoriesState = (hits, page) => prevState => {
+      const { searchKey, results } = prevState;
 
-    const updatedHits = [...oldHits, ...hits];
+      const oldHits =
+        results && results[searchKey] ? results[searchKey].hits : [];
 
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: updatedHits, page }
-      },
-      isLoading: false
-    });
+      const updatedHits = [...oldHits, ...hits];
+
+      return {
+        results: {
+          ...results,
+          [searchKey]: { hits: updatedHits, page }
+        },
+        isLoading: false
+      };
+    };
   }
 
   onDismiss(id) {
